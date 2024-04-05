@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, url_for
 
+# url_for está sendo utilizado nos links das páginas HTML, o mesmo referência as funções referentes ao seu ROUTE. 
 
 app = Flask(__name__)
 
