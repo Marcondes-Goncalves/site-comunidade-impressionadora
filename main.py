@@ -7,19 +7,23 @@ app = Flask(__name__)
 lista_usuarios: list[str] = ["Marcondes", "Maria", "Ana", "João", "Rosa"]
 
 @app.route("/")
-def home():
+def home() -> str:
     return render_template("home.html")
 
 
 @app.route("/contato")
-def contato():
+def contato() -> str:
     return render_template("contato.html")
 
 
 @app.route("/usuarios")
-def usuarios():
+def usuarios() -> str:
     return render_template("usuarios.html", lista_usuarios = lista_usuarios)
 
+
+@app.route("/login")
+def login() -> str:
+    return render_template("login.html")
 
 
 
