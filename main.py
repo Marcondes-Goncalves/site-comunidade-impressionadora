@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, url_for, request, flash, redirect
 from forms import FormCriarConta, FormLogin
+from flask_sqlalchemy import SQLAlchemy
 
 # url_for está sendo utilizado nos links das páginas HTML, o mesmo referência as funções referentes ao seu ROUTE. 
 
@@ -9,6 +10,10 @@ app = Flask(__name__)
 lista_usuarios: list[str] = ["Marcondes", "Maria", "Ana", "João", "Rosa"]
 
 app.config["SECRET_KEY"] = '8c5762d6223bc0970d3936c2c0deb095'
+
+# caminho do banco de dados
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
+database = SQLAlchemy(app)
 
 @app.route("/")
 def home() -> str:
