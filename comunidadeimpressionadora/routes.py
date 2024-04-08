@@ -4,7 +4,7 @@ from flask import flash, render_template, redirect, url_for, request
 from comunidadeimpressionadora.forms import FormLogin, FormCriarConta
 from comunidadeimpressionadora import app, database, bcrypt
 from comunidadeimpressionadora.models import Usuario
-from flask_login import login_user
+from flask_login import login_user, logout_user, current_user
 
 # url_for está sendo utilizado nos links das páginas HTML, o mesmo referência as funções referentes ao seu ROUTE.
 
@@ -59,4 +59,22 @@ def login() -> str:
         return redirect(url_for('home'))
     
     return render_template("login.html", form_login = form_login, form_criarconta = form_criarconta)
+
+
+@app.route('/sair')
+def sair():
+    logout_user()
+    flash(f"Logout feito com sucesso", 'alert-success')
+    return redirect(url_for('home'))
+
+
+@app.route('/perfil')
+def perfil():
+    return render_template('perfil.html')
+
+
+@app.route('/post/criar')
+def criar_post():
+    return render_template('criarpost.html')
+
 
