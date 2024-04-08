@@ -9,7 +9,10 @@ class Usuario(database.Model):
     senha = database.Column(database.String, nullable = False)
     email = database.Column(database.String, nullable = False, unique = True)
     foto_perfil = database.Column(database.String, default = 'default.jpg')
+    cursos = database.Column(database.String, nullable = False, default = 'Não Informado')
 
+    posts = database.relationship('Post', backref = 'autor', lazy = True)
+    
 
 class Post(database.Model):
 
@@ -18,4 +21,5 @@ class Post(database.Model):
     corpo = database.Column(database.Text, nullable = False)
     data_criacao = database.Column(database.DateTime, nullable = False, default = datetime.now())
 
+    id_usuario = database.Column(database.Integer, database.ForeignKey('usuario.id'), nullable = False)
 
