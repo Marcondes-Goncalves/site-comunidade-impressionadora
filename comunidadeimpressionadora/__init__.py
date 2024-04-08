@@ -14,6 +14,10 @@ database = SQLAlchemy(app)
 
 #Gerênciador de Login
 login_manager = LoginManager(app)
+#definindo para onde o usuário será redirecionado, caso tente acessar alguma página sem estar logado.
+login_manager.login_view = 'login'
+login_manager.login_message = 'Por favor faça login para acessar essa página'
+login_manager.login_message_category = 'alert-info'
 
 #Criptografa as senhas
 bcrypt = Bcrypt(app)

@@ -4,9 +4,11 @@ from flask import flash, render_template, redirect, url_for, request
 from comunidadeimpressionadora.forms import FormLogin, FormCriarConta
 from comunidadeimpressionadora import app, database, bcrypt
 from comunidadeimpressionadora.models import Usuario
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 
 # url_for está sendo utilizado nos links das páginas HTML, o mesmo referência as funções referentes ao seu ROUTE.
+
+# login_required é um decorator que possibilita bloquear páginas caso o usuário não esteja logado.
 
 lista_usuarios: list[str] = ["Marcondes", "Maria", "Ana", "João", "Rosa"]
 
@@ -21,6 +23,7 @@ def contato() -> str:
 
 
 @app.route("/usuarios")
+@login_required
 def usuarios() -> str:
     return render_template("usuarios.html", lista_usuarios = lista_usuarios)
 
@@ -62,6 +65,7 @@ def login() -> str:
 
 
 @app.route('/sair')
+@login_required
 def sair():
     logout_user()
     flash(f"Logout feito com sucesso", 'alert-success')
@@ -69,11 +73,13 @@ def sair():
 
 
 @app.route('/perfil')
+@login_required
 def perfil():
     return render_template('perfil.html')
 
 
 @app.route('/post/criar')
+@login_required
 def criar_post():
     return render_template('criarpost.html')
 
