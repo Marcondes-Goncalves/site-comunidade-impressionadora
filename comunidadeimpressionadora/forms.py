@@ -1,5 +1,7 @@
 
+from wsgiref.validate import validator
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import  DataRequired, Length, Email, EqualTo, ValidationError
 from comunidadeimpressionadora.models import Usuario
@@ -33,6 +35,7 @@ class FormEditarPerfil(FlaskForm):
     
     username: str = StringField("Nome do Usuário", validators = [DataRequired()])
     email: str = StringField("E-mail", validators = [DataRequired(), Email()])
+    foto_perfil = FileField('Atualizar Foto de Perfil', validators = [FileAllowed(['jpg', 'png'])])
     botao_submit_editarperfil = SubmitField("Confirmar Edição")
 
     #Validando se o E-mail já foi cadastrado.
@@ -42,3 +45,5 @@ class FormEditarPerfil(FlaskForm):
             usuario = Usuario.query.filter_by(email=email.data).first()
             if usuario:
                 raise ValidationError('Já existe um usuário com esse E-mail, Cadastre outro E-mail.')
+            
+            
