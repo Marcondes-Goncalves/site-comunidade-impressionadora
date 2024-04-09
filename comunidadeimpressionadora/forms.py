@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import  DataRequired, Length, Email, EqualTo, ValidationError
 from comunidadeimpressionadora.models import Usuario
+from flask_login import current_user
 
 class FormCriarConta(FlaskForm):
     
@@ -27,3 +28,17 @@ class FormLogin(FlaskForm):
     lembrar_dados = BooleanField("Lembrar dados de acesso")
     botao_submit_login = SubmitField("Fazer Login")
 
+
+class FormEditarPerfil(FlaskForm):
+    
+    username: str = StringField("Nome do Usuário", validators = [DataRequired()])
+    email: str = StringField("E-mail", validators = [DataRequired(), Email()])
+    botao_submit_editarperfil = SubmitField("Confirmar Edição")
+
+    #Validando se o E-mail já foi cadastrado.
+    def validate_email(self, email):
+        #verificar se o usuario mudou de E-mail
+        if current_user.email != email.data:
+            usuario = Usuario.query.filter_by(email=email.data).first()
+            if usuario:
+                raise ValidationError('Já existe um usuário com esse E-mail, Cadastre outro E-mail.')
