@@ -1,9 +1,9 @@
 
 from flask import flash, render_template, redirect, url_for, request
 
-from comunidadeimpressionadora.forms import FormLogin, FormCriarConta, FormEditarPerfil
+from comunidadeimpressionadora.forms import FormLogin, FormCriarConta, FormEditarPerfil, FormCriarPost
 from comunidadeimpressionadora import app, database, bcrypt
-from comunidadeimpressionadora.models import Usuario
+from comunidadeimpressionadora.models import Usuario, Post
 from flask_login import login_user, logout_user, current_user, login_required
 
 import secrets
@@ -15,7 +15,6 @@ from PIL import Image
 
 # login_required é um decorator que possibilita bloquear páginas caso o usuário não esteja logado.
 
-lista_usuarios: list[str] = ["Marcondes", "Maria", "Ana", "João", "Rosa"]
 
 @app.route("/")
 def home() -> str:
@@ -30,6 +29,7 @@ def contato() -> str:
 @app.route("/usuarios")
 @login_required
 def usuarios() -> str:
+    lista_usuarios = Usuario.query.all()
     return render_template("usuarios.html", lista_usuarios = lista_usuarios)
 
 
@@ -68,6 +68,8 @@ def login() -> str:
         database.session.commit()
         #Exibir msg de conta criada com sucesso
         flash(f"Conta criada com sucesso no E-mail: {form_criarconta.email.data}", 'alert-success')
+        # Fazendo o login
+        login_user(usuario)
         #Redirecionar para homepage
         return redirect(url_for('home'))
     
@@ -146,9 +148,18 @@ def editar_perfil():
     return render_template('editarperfil.html', foto_perfil = foto_perfil, form = form)
 
 
-@app.route('/post/criar')
+@app.route('/post/criar', methods = ["GET", "POST"])
 @login_required
 def criar_post():
-    return render_template('criarpost.html')
+    form = FormCriarPost()
+
+    if form.validate_on_submit():
+        post = Post(titulo = form.titulo.data, corpo = form.corpo.data, autor = current_user)
+        database.session.add(post)
+        database.session.commit()
+        flash('Post Criado com Sucesso', 'alert-sucess')
+        return redirect(url_for('home'))
+
+    return render_template('criarpost.html', form = form)
 
 
