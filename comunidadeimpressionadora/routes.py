@@ -18,7 +18,8 @@ from PIL import Image
 
 @app.route("/")
 def home() -> str:
-    return render_template("home.html")
+    posts = Post.query.order_by(Post.id.desc())
+    return render_template("home.html", posts = posts)
 
 
 @app.route("/contato")
