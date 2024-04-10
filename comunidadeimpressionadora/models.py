@@ -12,12 +12,13 @@ def load_usuario(id_usuario):
 
 class Usuario(database.Model, UserMixin):
     
-    id = database.Column(database.Integer, primary_key = True)
-    username = database.Column(database.String, nullable = False)
-    senha = database.Column(database.String, nullable = False)
-    email = database.Column(database.String, nullable = False, unique = True)
-    foto_perfil = database.Column(database.String, default = 'default.jpg')
-    cursos = database.Column(database.String, nullable = False, default = 'Não Informado')
+    id: int = database.Column(database.Integer, primary_key = True)
+    username: str = database.Column(database.String, nullable = False)
+    senha: str = database.Column(database.String, nullable = False)
+    email: str = database.Column(database.String, nullable = False, unique = True)
+    foto_perfil: str = database.Column(database.String, default = 'default.jpg')
+    
+    cursos: str = database.Column(database.String, nullable = False, default = 'Não Informado')
 
     posts = database.relationship('Post', backref = 'autor', lazy = True)
     
