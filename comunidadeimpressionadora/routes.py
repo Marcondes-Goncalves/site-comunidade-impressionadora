@@ -6,6 +6,11 @@ from comunidadeimpressionadora import app, database, bcrypt
 from comunidadeimpressionadora.models import Usuario
 from flask_login import login_user, logout_user, current_user, login_required
 
+import secrets
+import os
+
+from PIL import Image
+
 # url_for está sendo utilizado nos links das páginas HTML, o mesmo referência as funções referentes ao seu ROUTE.
 
 # login_required é um decorator que possibilita bloquear páginas caso o usuário não esteja logado.
@@ -84,6 +89,27 @@ def perfil():
     return render_template('perfil.html', foto_perfil = foto_perfil)
 
 
+def salvar_imagem(imagem):
+    #código aleatorio
+    codigo: str = secrets.token_hex(8)
+    #separando o nome e a extensão da imagem
+    nome, extensao = os.path.splitext(imagem.filename)
+    #juntando o nome o código e a extensão
+    nome_arquivo: str = nome + codigo + extensao
+    #Local que a imagem será salva
+    caminho_completo = os.path.join(app.root_path, 'static/fotos_perfil', nome_arquivo)
+
+    #reduzuir o tamanho da imagem
+    tamanho = (400, 400)
+    imagem_reduzida = Image.open(imagem)
+    imagem_reduzida.thumbnail(tamanho)
+
+    #salvar a imagem na pasta fotos_perfil
+    imagem_reduzida.save(caminho_completo)
+    
+    return nome_arquivo
+
+
 @app.route('/perfil/editar', methods = ["GET", "POST"])
 @login_required
 def editar_perfil():
@@ -92,6 +118,10 @@ def editar_perfil():
     if form.validate_on_submit():
         current_user.email = form.email.data
         current_user.username = form.username.data
+        if form.foto_perfil.data:
+            nome_imagem = salvar_imagem(form.foto_perfil.data)
+            current_user.foto_perfil = nome_imagem
+
         database.session.commit()
         flash(f"Perfil atualizado com sucesso", 'alert-success')
         return redirect(url_for('perfil'))
