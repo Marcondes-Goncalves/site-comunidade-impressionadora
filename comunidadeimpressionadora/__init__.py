@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager 
 
+import sqlalchemy
+
 import os
 
 app = Flask(__name__)
@@ -16,7 +18,7 @@ if os.getenv('DATABASE_URL'):
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
-    
+
 database = SQLAlchemy(app)
 
 #Gerênciador de Login
@@ -29,5 +31,15 @@ login_manager.login_message_category = 'alert-info'
 #Criptografa as senhas
 bcrypt = Bcrypt(app)
 
-from comunidadeimpressionadora import routes
+from comunidadeimpressionadora import models
+engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+inspector = sqlalchemy.inspect(engine)
+if not inspector.has_table("usuario"):
+    with app.app_context():
+        database.drop_all()
+        database.create_all()
+        print("Base de dados criada")
+else:
+    print("Base de dados já existente")
 
+from comunidadeimpressionadora import routes
