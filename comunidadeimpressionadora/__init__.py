@@ -32,9 +32,9 @@ login_manager.login_message_category = 'alert-info'
 bcrypt = Bcrypt(app)
 
 from comunidadeimpressionadora import models
-engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])    
 inspector = sqlalchemy.inspect(engine)
-if not inspector.has_table("usuario"):
+if not sqlalchemy.engine.reflection.Inspector.has_table(inspector, "usuario"):
     with app.app_context():
         database.drop_all()
         database.create_all()
