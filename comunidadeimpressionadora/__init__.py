@@ -4,12 +4,19 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager 
 
+import os
+
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = '8c5762d6223bc0970d3936c2c0deb095'
 
 # caminho do banco de dados
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
+if os.getenv('DATABASE_URL'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
+    
 database = SQLAlchemy(app)
 
 #Gerênciador de Login
