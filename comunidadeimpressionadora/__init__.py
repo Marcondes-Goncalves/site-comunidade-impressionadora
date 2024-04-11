@@ -14,10 +14,12 @@ app.config["SECRET_KEY"] = '8c5762d6223bc0970d3936c2c0deb095'
 
 # caminho do banco de dados
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
-if os.getenv('DATABASE_URL'):
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
+# if os.getenv('DATABASE_URL'):
+#     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# else:
+#     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///comunidade.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 database = SQLAlchemy(app)
 
@@ -34,7 +36,7 @@ bcrypt = Bcrypt(app)
 from comunidadeimpressionadora import models
 engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])    
 inspector = sqlalchemy.inspect(engine)
-if not sqlalchemy.engine.reflection.Inspector.has_table(inspector, "usuario"):
+if not inspector.has_table( "usuario"):
     with app.app_context():
         database.drop_all()
         database.create_all()
